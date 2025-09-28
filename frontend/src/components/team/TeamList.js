@@ -152,6 +152,11 @@ const TeamList = () => {
     setShowEditModal(true);
   };
 
+  const handleQuickAssign = (member) => {
+    setSelectedMember(member);
+    setShowQuickAssign(true);
+  };
+
   const handleDeleteMember = async (memberId) => {
     if (window.confirm('Are you sure you want to remove this team member?')) {
       try {
