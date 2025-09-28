@@ -187,7 +187,7 @@ const Dashboard = () => {
               <Users className="h-6 w-6 text-green-600" />
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Main Content Grid */}
