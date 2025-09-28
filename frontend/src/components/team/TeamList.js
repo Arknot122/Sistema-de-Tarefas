@@ -379,11 +379,22 @@ const TeamList = () => {
                     </div>
                   </div>
 
-                  {/* Member Since */}
+                  {/* Quick Actions */}
                   <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      Member since {formatDate(member.created_at)}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        Member since {formatDate(member.created_at)}
+                      </div>
+                      <Button
+                        onClick={() => handleQuickAssign(member)}
+                        size="sm"
+                        className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium"
+                        data-testid={`quick-assign-${member.id}`}
+                      >
+                        <Target className="h-4 w-4 mr-1" />
+                        Assign Task
+                      </Button>
                     </div>
                   </div>
                 </div>
