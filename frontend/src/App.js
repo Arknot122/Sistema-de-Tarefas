@@ -169,6 +169,7 @@ function App() {
                       <Route path="/campaigns" element={<CampaignList />} />
                       <Route path="/campaigns/:id" element={<CampaignDetail />} />
                       <Route path="/tasks" element={<TaskList />} />
+                      <Route path="/team" element={<TeamList />} />
                       <Route path="/" element={<Navigate to="/dashboard" />} />
                     </Routes>
                   </Layout>
