@@ -11,6 +11,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import CampaignList from './components/campaigns/CampaignList';
 import CampaignDetail from './components/campaigns/CampaignDetail';
 import TaskList from './components/tasks/TaskList';
+import TeamList from './components/team/TeamList';
 import Layout from './components/layout/Layout';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
