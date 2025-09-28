@@ -257,6 +257,114 @@ class MarketingConsultancyAPITester:
             print(f"   Found {len(response)} team members")
         return success
 
+    def test_get_team_member_by_id(self):
+        """Test getting a specific team member"""
+        if not self.test_user_id:
+            print("❌ No user ID available for testing")
+            return False
+            
+        success, response = self.run_test(
+            "Get Team Member by ID",
+            "GET",
+            f"team/{self.test_user_id}",
+            200
+        )
+        return success
+
+    def test_update_team_member(self):
+        """Test updating a team member"""
+        if not self.test_user_id:
+            print("❌ No user ID available for updating")
+            return False
+            
+        update_data = {
+            "name": "Updated Test User",
+            "role": "creative_director",
+            "is_active": True
+        }
+        
+        success, response = self.run_test(
+            "Update Team Member",
+            "PUT",
+            f"team/{self.test_user_id}",
+            200,
+            data=update_data
+        )
+        return success
+
+    def test_create_team_member_via_register(self):
+        """Test creating another team member via registration"""
+        test_email = f"team_member_{datetime.now().strftime('%H%M%S')}@example.com"
+        user_data = {
+            "email": test_email,
+            "name": "Team Member Test",
+            "password": "TeamPass123!",
+            "role": "designer"
+        }
+        
+        success, response = self.run_test(
+            "Create Team Member (Register)",
+            "POST",
+            "auth/register",
+            200,
+            data=user_data
+        )
+        
+        if success and 'id' in response:
+            self.second_user_id = response['id']
+            print(f"   Created second user with ID: {self.second_user_id}")
+            return True
+        return False
+
+    def test_assign_task_to_team_member(self):
+        """Test assigning a task to a team member"""
+        if not self.test_campaign_id or not hasattr(self, 'second_user_id'):
+            print("❌ No campaign ID or second user ID available for task assignment")
+            return False
+            
+        task_data = {
+            "title": "Team Assignment Test Task",
+            "description": "A task assigned to a team member",
+            "campaign_id": self.test_campaign_id,
+            "assignee_id": self.second_user_id,
+            "priority": "high",
+            "due_date": datetime.now(timezone.utc).isoformat(),
+            "estimated_hours": 6.0,
+            "dependencies": []
+        }
+        
+        success, response = self.run_test(
+            "Assign Task to Team Member",
+            "POST",
+            "tasks",
+            200,
+            data=task_data
+        )
+        
+        if success and 'id' in response:
+            self.assigned_task_id = response['id']
+            print(f"   Created assigned task with ID: {self.assigned_task_id}")
+            return True
+        return False
+
+    def test_get_tasks_for_team_member(self):
+        """Test getting tasks filtered by team member"""
+        if not self.test_campaign_id:
+            print("❌ No campaign ID available for filtering tasks")
+            return False
+            
+        success, response = self.run_test(
+            "Get Tasks for Campaign",
+            "GET",
+            f"tasks?campaign_id={self.test_campaign_id}",
+            200
+        )
+        
+        if success:
+            assigned_tasks = [task for task in response if task.get('assignee_id') == getattr(self, 'second_user_id', None)]
+            print(f"   Found {len(assigned_tasks)} tasks assigned to team member")
+        return success
+
     def test_get_dashboard_stats(self):
         """Test getting dashboard statistics"""
         success, response = self.run_test(
