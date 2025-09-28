@@ -8,6 +8,7 @@ import { Toaster } from './components/ui/sonner';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import Dashboard from './components/dashboard/Dashboard';
+import MyTasksDashboard from './components/dashboard/MyTasksDashboard';
 import CampaignList from './components/campaigns/CampaignList';
 import CampaignDetail from './components/campaigns/CampaignDetail';
 import TaskList from './components/tasks/TaskList';
@@ -166,6 +167,7 @@ function App() {
                   <Layout>
                     <Routes>
                       <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/my-tasks" element={<MyTasksDashboard />} />
                       <Route path="/campaigns" element={<CampaignList />} />
                       <Route path="/campaigns/:id" element={<CampaignDetail />} />
                       <Route path="/tasks" element={<TaskList />} />
