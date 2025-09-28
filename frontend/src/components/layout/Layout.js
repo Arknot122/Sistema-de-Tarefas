@@ -19,16 +19,18 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  User
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Campaigns', href: '/campaigns', icon: FolderOpen },
-  { name: 'Tasks', href: '/tasks', icon: CheckSquare },
-  { name: 'Team', href: '/team', icon: Users },
-  { name: 'Reports', href: '/reports', icon: BarChart3 },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Minhas Demandas', href: '/my-tasks', icon: User },
+  { name: 'Campanhas', href: '/campaigns', icon: FolderOpen },
+  { name: 'Tarefas', href: '/tasks', icon: CheckSquare },
+  { name: 'Equipe', href: '/team', icon: Users },
+  { name: 'Relatórios', href: '/reports', icon: BarChart3 },
+  { name: 'Configurações', href: '/settings', icon: Settings },
 ];
 
 const Layout = ({ children }) => {
@@ -45,6 +47,11 @@ const Layout = ({ children }) => {
   };
 
   const isActive = (href) => location.pathname === href;
+
+  const getCurrentPageName = () => {
+    const currentNav = navigation.find(item => isActive(item.href));
+    return currentNav?.name || 'Dashboard';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -84,7 +91,7 @@ const Layout = ({ children }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  data-testid={`nav-${item.name.toLowerCase()}`}
+                  data-testid={`nav-${item.name.toLowerCase().replace(' ', '-')}`}
                   className={`
                     group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200
                     ${active 
@@ -99,6 +106,11 @@ const Layout = ({ children }) => {
                     ${active ? 'text-black' : 'text-gray-400 group-hover:text-black'}
                   `} />
                   {item.name}
+                  {item.name === 'Minhas Demandas' && (
+                    <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                      NOVO
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -127,13 +139,17 @@ const Layout = ({ children }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
               <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                Meu Perfil
+              </DropdownMenuItem>
+              <DropdownMenuItem>
                 <Settings className="mr-2 h-4 w-4" />
-                Account Settings
+                Configurações da Conta
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout} data-testid="logout-button">
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign out
+                Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -157,12 +173,26 @@ const Layout = ({ children }) => {
             
             <div className="hidden lg:block">
               <h1 className="text-2xl font-semibold text-black">
-                {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
+                {getCurrentPageName()}
               </h1>
             </div>
 
             <div className="lg:hidden">
               <span className="text-xl font-bold text-black">DemandHub</span>
+            </div>
+
+            {/* Desktop quick actions */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Link to="/my-tasks">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-gray-300 hover:border-yellow-400 hover:bg-yellow-50"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Minhas Demandas
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
