@@ -13,6 +13,7 @@ import {
 } from '../ui/dropdown-menu';
 import AddTeamMemberModal from './AddTeamMemberModal';
 import EditTeamMemberModal from './EditTeamMemberModal';
+import WorkloadChart from './WorkloadChart';
 import { 
   Plus,
   Search,
