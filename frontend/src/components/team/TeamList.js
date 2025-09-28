@@ -442,6 +442,16 @@ const TeamList = () => {
           onMemberUpdated={fetchData}
         />
       )}
+
+      <QuickTaskAssignment
+        isOpen={showQuickAssign}
+        onClose={() => {
+          setShowQuickAssign(false);
+          setSelectedMember(null);
+        }}
+        onTaskCreated={fetchData}
+        preSelectedMember={selectedMember}
+      />
     </div>
   );
 };
