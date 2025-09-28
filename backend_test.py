@@ -416,18 +416,30 @@ def main():
     tester.test_get_campaigns()
     tester.test_get_campaign_by_id()
     
+    # Test team management operations
+    tester.test_create_team_member_via_register()
+    tester.test_get_team_members()
+    tester.test_get_team_member_by_id()
+    tester.test_update_team_member()
+    
     # Test task operations
     tester.test_create_task()
     tester.test_get_tasks()
     tester.test_get_task_by_id()
     tester.test_update_task()
     
+    # Test team task assignment
+    tester.test_assign_task_to_team_member()
+    tester.test_get_tasks_for_team_member()
+    
     # Test other endpoints
-    tester.test_get_team_members()
     tester.test_get_dashboard_stats()
     
     # Cleanup
     tester.test_delete_task()
+    if hasattr(tester, 'assigned_task_id'):
+        tester.test_task_id = tester.assigned_task_id
+        tester.test_delete_task()
     
     # Print results
     print("\n" + "=" * 50)
