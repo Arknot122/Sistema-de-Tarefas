@@ -376,8 +376,72 @@ async def delete_task(task_id: str, current_user: User = Depends(get_current_use
 # Team Routes
 @api_router.get("/team", response_model=List[User])
 async def get_team_members(current_user: User = Depends(get_current_user)):
-    users = await db.users.find({"is_active": True}).to_list(1000)
+    users = await db.users.find().to_list(1000)
     return [User(**parse_from_mongo({k: v for k, v in user.items() if k != 'password'})) for user in users]
+
+@api_router.get("/team/{user_id}", response_model=User)
+async def get_team_member(user_id: str, current_user: User = Depends(get_current_user)):
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Team member not found"
+        )
+    user_data = {k: v for k, v in user.items() if k != 'password'}
+    return User(**parse_from_mongo(user_data))
+
+@api_router.put("/team/{user_id}", response_model=User)
+async def update_team_member(user_id: str, user_data: dict, current_user: User = Depends(get_current_user)):
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Team member not found"
+        )
+    
+    # Update only provided fields
+    update_data = {k: v for k, v in user_data.items() if v is not None and k != 'id'}
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    update_data = prepare_for_mongo(update_data)
+    
+    await db.users.update_one({"id": user_id}, {"$set": update_data})
+    
+    updated_user = await db.users.find_one({"id": user_id})
+    user_response = {k: v for k, v in updated_user.items() if k != 'password'}
+    return User(**parse_from_mongo(user_response))
+
+@api_router.delete("/team/{user_id}")
+async def delete_team_member(user_id: str, current_user: User = Depends(get_current_user)):
+    # Check if user exists
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Team member not found"
+        )
+    
+    # Don't allow deleting yourself
+    if user_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete your own account"
+        )
+    
+    # Delete the user
+    result = await db.users.delete_one({"id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Team member not found"
+        )
+    
+    # Also delete or reassign their tasks (optional)
+    await db.tasks.update_many(
+        {"assignee_id": user_id},
+        {"$unset": {"assignee_id": ""}}
+    )
+    
+    return {"message": "Team member deleted successfully"}
 
 # Dashboard Routes
 @api_router.get("/dashboard/stats")
