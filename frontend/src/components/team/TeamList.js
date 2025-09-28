@@ -322,6 +322,10 @@ const TeamList = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => handleQuickAssign(member)}>
+                          <Target className="mr-2 h-4 w-4" />
+                          Assign Task
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEditMember(member)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit Member
