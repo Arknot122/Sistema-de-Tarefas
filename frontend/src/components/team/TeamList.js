@@ -14,6 +14,7 @@ import {
 import AddTeamMemberModal from './AddTeamMemberModal';
 import EditTeamMemberModal from './EditTeamMemberModal';
 import WorkloadChart from './WorkloadChart';
+import QuickTaskAssignment from './QuickTaskAssignment';
 import { 
   Plus,
   Search,
